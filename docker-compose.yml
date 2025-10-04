@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: LiquidatedByMarket!    # ganti dengan password root
+      MYSQL_DATABASE: secapp           # opsional, nama DB default
+      MYSQL_USER: pancarona                   # opsional, user tambahan
+      MYSQL_PASSWORD: HyperLiquidC3X!           # opsional, password user tambahan
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql          # simpan data agar tidak hilang saat container restart
+
+volumes:
+  mysql_data:

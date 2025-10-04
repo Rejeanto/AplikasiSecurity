@@ -13,6 +13,7 @@
   <!-- Fonts -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" />
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <!-- Icons -->
   <link rel="stylesheet" href="{{ asset('assets/fonts/tabler-icons.min.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/fonts/feather.css') }}" />
