@@ -19,7 +19,7 @@
         <li class="dropdown pc-h-item header-user-profile">
           <a class="pc-head-link dropdown-toggle arrow-none me-0" data-bs-toggle="dropdown" href="#">
             <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar" />
-            <span>Stebin Ben</span>
+            <span>{{ auth()->user()->name }}</span>
           </a>
           <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
             <div class="dropdown-header">
@@ -28,10 +28,10 @@
                   <img src="{{ asset('assets/images/user/avatar-2.jpg') }}" class="user-avtar wid-35" />
                 </div>
                 <div class="flex-grow-1 ms-3">
-                  <h6 class="mb-1">Stebin Ben</h6>
-                  <span>Satpam</span>
+                  <h6 class="mb-1">{{ auth()->user()->name }}</h6>
+                  <span>{{ auth()->user()->role }}</span>
                 </div>
-                <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a>
+                {{-- <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-power text-danger"></i></a> --}}
               </div>
             </div>
             <ul class="nav drp-tabs nav-fill nav-tabs">
@@ -42,7 +42,10 @@
             <div class="tab-content">
               <div class="tab-pane fade show active">
                 <a href="#!" class="dropdown-item"><i class="ti ti-edit-circle"></i> Edit Profile</a>
-                <a href="#!" class="dropdown-item"><i class="ti ti-power"></i> Logout</a>
+                <form action="{{ route('logout') }}" method="POST">
+                  @csrf
+                  <button type="submit" class="dropdown-item"><i class="ti ti-power"></i> Logout</button>
+                </form>
               </div>
             </div>
           </div>

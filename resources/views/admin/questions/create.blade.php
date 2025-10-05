@@ -81,6 +81,75 @@
                                     @enderror
                                 </div>
 
+                                {{-- <div class="mb-4">
+                                    <label for="question_text" class="form-label">
+                                        Teks Jawaban <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control @error('question_text') is-invalid @enderror" 
+                                              id="question_text" 
+                                              name="question_text" 
+                                              rows="4"
+                                              placeholder="Tulis jawaban Anda di sini..."
+                                              required>{{ old('question_text') }}</textarea>
+                                    @error('question_text')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div> --}}
+
+                                <div class="mb-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="show_media" 
+                                               name="show_media" 
+                                               value="0"
+                                               {{ old('show_media', false) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="show_media">
+                                            Tampilkan Media
+                                        </label>
+                                    </div>
+                                </div>
+
+                                {{-- media --}}
+
+                                <div id="media_form" style="display: none;">
+                                    <div class="mb-4">
+                                        <label for="media_url" class="form-label">
+                                            Tautan Media <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control @error('media_url') is-invalid @enderror" 
+                                                  id="media_url" 
+                                                  name="media_url" 
+                                                  rows="1"
+                                                  placeholder="Tautkan Link Disini"
+                                                  >{{ old('media_url') }}</textarea>
+                                        @error('media_url')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+    
+                                    <div class="mb-4">
+                                        <label for="media_type" class="form-label">
+                                            Tipe Media <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select @error('media_type') is-invalid @enderror" 
+                                                id="media_type" 
+                                                name="media_type"
+                                                >
+                                            <option value="">Pilih Tipe</option>
+                                            <option value="video" {{ old('media_type') === 'video' ? 'selected' : '' }}>
+                                                Video
+                                            </option>
+                                            <option value="image" {{ old('media_type') === 'image' ? 'selected' : '' }}>
+                                                Gambar
+                                            </option>
+                                        </select>
+                                        @error('media_type')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+    
+                                </div>
                                 {{-- Question Type --}}
                                 <div class="mb-4">
                                     <label for="question_type" class="form-label">
@@ -101,6 +170,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+
 
                                 {{-- Options (Multiple Choice) --}}
                                 <div id="optionsContainer" style="display: none;">
@@ -223,6 +293,16 @@
     // Add option button
     document.getElementById('addOptionBtn').addEventListener('click', function() {
         addOption();
+    });
+
+    document.getElementById('show_media').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('media_form').style.display = 'block';
+        } else {
+            document.getElementById('media_form').style.display = 'none';
+            document.getElementById('media_url').value = '';
+            document.getElementById('media_type').value = '';
+        }
     });
 
     // Function to add option

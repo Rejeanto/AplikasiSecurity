@@ -3,17 +3,41 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\QuizController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StepController;
+use App\Http\Controllers\UserAssessmentController;
 use App\Models\Assessment;
 use App\Models\Quiz;
 
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+
+// Route::get('/', function () {
+//     $quizzes = Quiz::all();
+//     return view('index', compact('quizzes'));
+// })->name('index');
+
 Route::get('/', function () {
-    $quizzes = Quiz::all();
-    return view('index', compact('quizzes'));
+    if (auth()->check()) {
+        if (auth()->user()->isAdmin()) {
+            return redirect()->route('admin.dashboard');
+        }
+        return redirect()->route('user.assessments.index');
+    }
+    return redirect()->route('login');
 })->name('index');
 
-Route::view('/admin', 'admin')->name('admin');
+// Logout (Authenticated)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+
+// Route::view('/admin', 'admin')->name('admin');
 
 // Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -32,10 +56,10 @@ Route::view('/admin', 'admin')->name('admin');
 //     Route::delete('quizzes/{quiz}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
 // });
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->middleware('auth')->name('admin.')->group(function () {
 
     Route::get('/dashboard', function() {
-        return phpinfo();
+        return view('admin.dashboard');
     })->name('dashboard');
 
     Route::resource('assessments', AssessmentController::class);
@@ -94,4 +118,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('questions.duplicate');
     Route::post('questions/bulk-delete', [QuestionController::class, 'bulkDelete'])
         ->name('questions.bulk-delete');
+
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    // List assessments
+    Route::get('/assessments', [UserAssessmentController::class, 'index'])
+        ->name('user.assessments.index');
+
+    // Start assessment
+    Route::get('/assessments/{assessment}/start', [UserAssessmentController::class, 'start'])
+        ->name('user.assessments.start');
+
+    // Show step
+    Route::get('/assessments/{assessment}', [UserAssessmentController::class, 'show'])
+        ->name('user.assessments.show');
+
+    // Save step
+    Route::post('/assessments/{assessment}/steps/{step}/save', [UserAssessmentController::class, 'saveStep'])
+        ->name('user.assessments.save-step');
+
+    // Submit assessment
+    Route::get('/assessments/{assessment}/submit', [UserAssessmentController::class, 'submit'])
+        ->name('user.assessments.submit');
+
+    // View result
+    Route::get('/assessments/{assessment}/result', [UserAssessmentController::class, 'result'])
+        ->name('user.assessments.result');
 });
