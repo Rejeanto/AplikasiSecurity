@@ -80,18 +80,22 @@
                             </div>
 
                             @if($question->show_media)
-
-                            @if($question->media_type == 'image')
-                            <div class="mb-3">
-                                <img src="{{ $question->media_url }}" alt="Media" class="img-fluid" style="max-width: 100%; height: auto;">
-                            </div>
-                            @elseif($question->media_type == 'video')
-                            <div class="mb-3">
-                                <iframe width="100%" height="315" src="{{ $question->media_url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-
+                                @if($question->media_type == 'image')
+                                    <div class="mb-3">
+                                        <img src="{{ $question->media_url }}" alt="Media" class="img-fluid" style="max-width: 100%; height: auto;">
+                                    </div>
+                                @elseif($question->media_type == 'video')
+                                    <div class="mb-3" style="aspect-ratio: 16 / 9; width: 100%;">
+                                        <iframe 
+                                            src="{{ $question->media_url }}" 
+                                            style="width: 100%; height: 100%; border: 0; border-radius: 8px;"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowfullscreen>
+                                        </iframe>
+                                    </div>
+                                @endif
                             @endif
-                            @endif
+
 
                             {{-- Multiple Choice --}}
                             @if($question->isMultipleChoice())

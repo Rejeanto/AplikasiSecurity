@@ -147,6 +147,9 @@ class QuestionController extends Controller
                 'question_text' => $validated['question_text'],
                 'question_type' => $validated['question_type'],
                 'is_required' => $request->has('is_required') ? true : false,
+                'show_media' => $request->get('show_media',0) == 1 ? true : false,
+                'media_url' => $request->get('media_url'),
+                'media_type' => $request->get('media_type'),
             ]);
 
             // Handle options

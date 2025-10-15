@@ -81,6 +81,73 @@
                                     @enderror
                                 </div>
 
+                                <div class="mb-4">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" 
+                                               type="checkbox" 
+                                               id="show_media" 
+                                               name="show_media" 
+                                               value="1"
+                                               {{ old('show_media', $question->show_media) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="show_media">
+                                            Tampilkan Media
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="media_form">
+                                    <div class="mb-4">
+                                        <label for="media_url" class="form-label">
+                                            Tautan Media <span class="text-danger">*</span>
+                                        </label>
+                                        <textarea class="form-control @error('media_url') is-invalid @enderror" 
+                                                  id="media_url" 
+                                                  name="media_url" 
+                                                  rows="1"
+                                                  placeholder="Tautkan Link Disini"
+                                                  >{{ old('media_url', $question->media_url) }}</textarea>
+                                        @error('media_url')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+    
+                                    <div class="mb-4">
+                                        <label for="media_type" class="form-label">
+                                            Tipe Media <span class="text-danger">*</span>
+                                        </label>
+                                        <select class="form-select @error('media_type') is-invalid @enderror" 
+                                                id="media_type" 
+                                                name="media_type"
+                                                >
+                                            <option value="">Pilih Tipe</option>
+                                            <option value="video" {{ old('media_type', $question->media_type) === 'video' ? 'selected' : '' }}>
+                                                Video
+                                            </option>
+                                            <option value="image" {{ old('media_type', $question->media_type) === 'image' ? 'selected' : '' }}>
+                                                Gambar
+                                            </option>
+                                        </select>
+                                        @error('media_type')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <button type="button" class="btn btn-primary" id="previewMediaBtn">Preview Media</button>
+    
+                                        <div class="my-2" id="mediaPreview" >
+                                            <div id="videoPreviewContainer">
+                                                {{-- <iframe src="" frameborder="0" id="videoPreview" style="display: none;" width="560" height="365"></iframe> --}}
+                                            </div>
+                                            <div id="imagePreviewContainer" >
+                                                {{-- <img src="" alt="Media Preview" width="100%" id="imagePreview" style="display: none;"> --}}
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+    
+                                </div>
+
                                 {{-- Question Type --}}
                                 <div class="mb-4">
                                     <label for="question_type" class="form-label">
@@ -213,6 +280,70 @@
     document.getElementById('addOptionBtn').addEventListener('click', function() {
         addOption();
     });
+
+    document.getElementById('show_media').addEventListener('change', function() {
+        if (this.checked) {
+
+            document.getElementById('media_form').style.display = 'block';
+
+        } else {
+
+            document.getElementById('media_form').style.display = 'none';
+            document.getElementById('media_url').value = '';
+            document.getElementById('media_type').value = '';
+
+        }
+
+        document.getElementById('previewMediaContainer').style.display = 'none';
+    });
+
+    document.getElementById('previewMediaBtn').addEventListener('click', function() {
+
+        const mediaType = document.getElementById('media_type').value;
+        let mediaUrl = document.getElementById('media_url').value;
+
+        let previewHtml = '';
+
+        if (mediaType === 'video') {
+
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?.*v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/;
+
+            const match = mediaUrl.match(regex);
+
+            if (match && match[1]) {
+                mediaUrl = 'https://www.youtube.com/embed/' + match[1];
+                document.getElementById('media_url').value = mediaUrl;
+            }
+
+            previewHtml = '<iframe style="width: 100%; height: 100%; border: 0; border-radius: 8px;" src="' + mediaUrl + '" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+            document.getElementById('videoPreviewContainer').style.aspectRatio = '16 / 9';
+            document.getElementById('videoPreviewContainer').style.width = '100%';
+            document.getElementById('videoPreviewContainer').innerHTML = previewHtml;
+            document.getElementById('imagePreviewContainer').innerHTML = '';
+            document.getElementById('videoPreviewContainer').style.display = 'block';
+            document.getElementById('imagePreviewContainer').style.display = 'none';
+
+
+        } else if (mediaType === 'image') {
+            
+            previewHtml = '<img src="' + mediaUrl + '" alt="Media Preview" width="100%">';
+            document.getElementById('imagePreviewContainer').innerHTML = previewHtml;
+            document.getElementById('videoPreviewContainer').innerHTML = '';
+            document.getElementById('videoPreviewContainer').style.aspectRatio = '';
+            document.getElementById('videoPreviewContainer').style.width = '';
+            document.getElementById('videoPreviewContainer').style.display = 'none';
+            document.getElementById('imagePreviewContainer').style.display = 'block';
+        }
+
+    })
+
+    document.getElementById('media_type').addEventListener('change', function() {
+        document.getElementById('media_url').value = '';
+        document.getElementById('imagePreviewContainer').innerHTML = '';
+        document.getElementById('videoPreviewContainer').innerHTML = '';
+        document.getElementById('videoPreviewContainer').style.aspectRatio = '';
+        document.getElementById('videoPreviewContainer').style.width = '0';
+    })
 
     // Function to add option
     function addOption(optionText = '', optionValue = '') {
